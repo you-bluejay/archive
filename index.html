@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>HAE : 解題 - Archive & Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --surface-color: rgba(255, 255, 255, 0.8);
+            --surface-solid: #ffffff;
+            --surface-hover: rgba(0, 0, 0, 0.03);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-focus: rgba(0, 0, 0, 0.3);
+            --text-main: #1d1d1f;
+            --text-sub: #86868b;
+            --accent-color: #000000;
+            --accent-bg: rgba(0, 0, 0, 0.05);
+            --shadow-sub: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --radius-main: 18px;
+            --radius-sm: 10px;
+            --preview-bg: #ffffff;
+            --preview-text: #1d1d1f;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --surface-color: rgba(22, 22, 23, 0.75);
+            --surface-solid: #1c1c1e;
+            --surface-hover: rgba(255, 255, 255, 0.06);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --border-focus: rgba(255, 255, 255, 0.4);
+            --text-main: #f5f5f7;
+            --text-sub: #86868b;
+            --accent-color: #ffffff;
+            --accent-bg: rgba(255, 255, 255, 0.1);
+            --shadow-sub: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+            --preview-bg: #121212;
+            --preview-text: #f5f5f7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .view-section {
+            display: none;
+            width: 100%;
+            height: calc(100dvh - 64px);
+            overflow-y: auto;
+            position: relative;
+        }
+        .view-section.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            flex-shrink: 0;
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 100%;
+            z-index: 30;
+        }
+
+        .header-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            min-width: 0;
+        }
+
+        .brand-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text-main);
+            flex-shrink: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .brand-sub-hanja {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--text-sub);
+            letter-spacing: 0.05em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 2px;
+            background: var(--surface-solid);
+            padding: 3px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            height: 32px;
+            padding: 0 14px;
+            border-radius: 9px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-tab-btn.active {
+            background: var(--surface-hover);
+            color: var(--text-main);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-right-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .icon-btn {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.2s ease;
+        }
+        .icon-btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-focus);
+        }
+
+        .record-badge {
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            height: 36px;
+            padding: 0 14px;
+            border-radius: 18px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sub);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .record-count {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        @media (max-width: 640px) {
+            .header-wrap { padding: 10px 16px; }
+            .record-badge { display: none; }
+        }
+
+        /* --- [섹션 1] 아카이브 --- */
+        .archive-container {
+            max-width: 720px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 20px calc(100px + env(safe-area-inset-bottom, 20px));
+        }
+
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .search-top-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .search-box { position: relative; flex: 1; }
+        .search-bar {
+            width: 100%;
+            height: 44px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            padding: 0 16px 0 42px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.2s ease;
+        }
+        .search-bar:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+        }
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+
+        .top-add-btn {
+            background: var(--text-main);
+            color: var(--bg-color);
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sub);
+            transition: transform 0.2s ease, opacity 0.2s;
+        }
+        .top-add-btn:hover { opacity: 0.85; transform: scale(1.02); }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            width: 100%;
+        }
+
+        .cat-btn {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            height: 36px;
+            padding: 0 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .cat-btn:hover { color: var(--text-main); background: var(--surface-hover); border-color: var(--border-focus); }
+        .cat-btn.active {
+            background: var(--text-main);
+            color: var(--bg-color);
+            border-color: transparent;
+            font-weight: 600;
+        }
+
+        .memo-container { display: flex; flex-direction: column; gap: 16px; }
+
+        .memo-card {
+            background-color: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            padding: 22px;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.25s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        .memo-card:hover { 
+            box-shadow: var(--shadow-hover); 
+            border-color: var(--border-focus); 
+        }
+
+        .memo-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 8px;
+        }
+
+        .memo-meta-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+        .memo-badge {
+            font-size: 0.74rem;
+            background: var(--surface-hover);
+            color: var(--text-main);
+            height: 24px;
+            padding: 0 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .memo-date { font-size: 0.76rem; color: var(--text-sub); }
+        .memo-actions { display: flex; gap: 4px; }
+
+        .action-icon-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            cursor: pointer;
+            font-size: 0.74rem;
+            font-weight: 500;
+            height: 26px;
+            padding: 0 10px;
+            border-radius: 6px;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+        }
+        .action-icon-btn:hover { 
+            background: var(--surface-hover); 
+            color: var(--text-main); 
+            border-color: var(--border-focus); 
+        }
+
+        .memo-title { 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            margin-bottom: 10px; 
+            letter-spacing: -0.01em; 
+            word-break: break-all;
+        }
+
+        .memo-image-wrap {
+            width: 100%;
+            max-height: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+            background: var(--surface-hover);
+        }
+        .memo-image { width: 100%; height: auto; max-height: 280px; object-fit: cover; display: block; }
+
+        .memo-content { font-size: 0.92rem; color: var(--text-main); opacity: 0.9; line-height: 1.7; white-space: pre-wrap; word-break: break-all; }
+
+        .tag {
+            font-size: 0.76rem;
+            color: var(--text-main);
+            background: var(--surface-hover);
+            height: 22px;
+            padding: 0 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            margin: 2px 4px 2px 0;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            transition: all 0.15s;
+        }
+        .tag:hover { background: var(--text-main); color: var(--bg-color); }
+
+        /* --- [섹션 2] HTML 뷰 --- */
+        .lab-container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px 20px calc(24px + env(safe-area-inset-bottom, 30px)) 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .lab-container.fullscreen-mode {
+            max-width: 100% !important;
+            padding: 12px 12px calc(20px + env(safe-area-inset-bottom, 30px)) 12px !important;
+            height: 100dvh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 90 !important;
+            background: var(--bg-color);
+        }
+
+        .lab-pane {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            overflow: hidden;
+            box-shadow: var(--shadow-sub);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .lab-pane-header {
+            background: var(--surface-hover);
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            gap: 8px;
+        }
+
+        .lab-pane-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lab-pane-tools {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex-shrink: 0;
+        }
+        .zoom-btn {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .zoom-btn:hover { background: var(--surface-hover); border-color: var(--border-focus); }
+        
+        .zoom-reset-btn {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            height: 26px;
+            padding: 0 6px;
+            border-radius: 6px;
+            font-size: 0.74rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .zoom-reset-btn:hover { background: var(--surface-hover); color: var(--text-main); }
+
+        .zoom-level-text {
+            font-size: 0.76rem;
+            color: var(--text-main);
+            font-weight: 600;
+            min-width: 34px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .lab-preview-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            position: relative;
+            background: var(--preview-bg);
+            color: var(--preview-text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .lab-preview-content {
+            width: 100%;
+            height: 100%;
+            transform-origin: top left;
+            transition: transform 0.1s ease;
+            padding: 20px;
+            word-break: break-all;
+            overflow-wrap: break-word;
+            background-color: var(--preview-bg);
+            color: var(--preview-text);
+        }
+
+        .lab-preview-content * {
+            cursor: pointer;
+            max-width: 100%;
+        }
+        .lab-preview-content *:hover {
+            outline: 2px dashed rgba(128, 128, 128, 0.4);
+            outline-offset: 2px;
+        }
+
+        /* 하단 입력 바 */
+        .lab-chatbar-container {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            box-shadow: var(--shadow-sub);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .lab-chatbar-container:focus-within {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+        }
+
+        .lab-chatbar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background: var(--surface-hover);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        .lab-textarea {
+            width: 100%;
+            min-height: 44px;
+            max-height: 200px;
+            background: transparent;
+            border: none;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-family: 'SF Mono', SFMono-Regular, Consolas, monospace;
+            font-size: 0.86rem;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            overflow-y: auto;
+            word-break: break-all;
+        }
+
+        .lab-chatbar-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 14px 10px 14px;
+            border-top: 1px solid var(--border-color);
+            background: var(--surface-solid);
+        }
+
+        .lab-action-btn {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            height: 30px;
+            padding: 0 10px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.15s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lab-action-btn:hover { background: var(--surface-hover); color: var(--text-main); border-color: var(--border-focus); }
+        .lab-action-btn.primary {
+            background: var(--text-main);
+            color: var(--bg-color);
+            border-color: transparent;
+            font-weight: 600;
+        }
+
+        /* --- [섹션 3] 에디터 뷰 --- */
+        .editor-container {
+            max-width: 720px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 20px calc(120px + env(safe-area-inset-bottom, 30px));
+        }
+
+        .editor-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .editor-title-group { display: flex; align-items: baseline; gap: 10px; }
+        .editor-view-title { font-size: 1.1rem; font-weight: 600; }
+        .editor-char-counter { font-size: 0.8rem; font-weight: 500; color: var(--text-sub); }
+        .editor-actions-group { display: flex; gap: 8px; }
+
+        .text-btn {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            height: 36px;
+            padding: 0 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.15s;
+        }
+        .text-btn:hover { background: var(--surface-hover); color: var(--text-main); border-color: var(--border-focus); }
+        .text-btn.primary {
+            background: var(--text-main);
+            color: var(--bg-color);
+            border-color: transparent;
+            font-weight: 600;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.82rem; color: var(--text-sub); font-weight: 600; margin-bottom: 6px; }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            height: 44px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            padding: 0 16px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.2s ease;
+        }
+        .form-select { cursor: pointer; }
+        .form-textarea { height: auto; resize: vertical; min-height: 280px; padding: 14px; line-height: 1.6; font-family: inherit; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+        }
+
+        .file-upload-box { display: flex; gap: 8px; align-items: center; }
+        .file-upload-label {
+            flex: 1;
+            height: 44px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            padding: 0 16px;
+            color: var(--text-sub);
+            font-size: 0.86rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.2s;
+        }
+        .file-upload-label:hover { border-color: var(--border-focus); color: var(--text-main); background: var(--surface-hover); }
+
+        .preview-thumb-box {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--surface-hover);
+            flex-shrink: 0;
+            display: none;
+        }
+        .preview-thumb { width: 100%; height: 100%; object-fit: cover; }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-sub);
+            padding: 60px 20px;
+            font-size: 0.9rem;
+            background: var(--surface-solid);
+            border-radius: var(--radius-main);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sub);
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 고정 헤더 -->
+    <header>
+        <div class="header-wrap">
+            <div class="header-left-group">
+                <span class="brand-title">
+                    HAE <span class="brand-sub-hanja">: 解題</span>
+                </span>
+                <div class="nav-tabs">
+                    <button class="nav-tab-btn active" onclick="switchMainView('archive')">Archive</button>
+                    <button class="nav-tab-btn" onclick="switchMainView('lab')">HTML</button>
+                </div>
+            </div>
+            <div class="header-right-group">
+                <div class="record-badge" id="recordBadgeWrap">
+                    Total <span class="record-count" id="recordCount">0</span>
+                </div>
+                <button class="icon-btn" id="themeToggleBtn" title="테마 전환">◐</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- [섹션 1] 아카이브 뷰 -->
+    <section id="archiveView" class="view-section active">
+        <div class="archive-container">
+            <div class="control-panel">
+                <div class="search-top-row">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-bar" id="searchInput" placeholder="검색 또는 #해시태그...">
+                    </div>
+                    <button class="top-add-btn" id="openEditorBtn" title="새 기록 작성">+</button>
+                </div>
+                <div class="category-grid" id="categoryGrid">
+                    <button class="cat-btn active" data-cat="전체">전체</button>
+                    <button class="cat-btn" data-cat="아이디어">아이디어</button>
+                    <button class="cat-btn" data-cat="세계관">세계관</button>
+                    <button class="cat-btn" data-cat="캐릭터">캐릭터</button>
+                    <button class="cat-btn" data-cat="대사">대사</button>
+                    <button class="cat-btn" data-cat="프롬프트">프롬프트</button>
+                </div>
+            </div>
+
+            <div class="memo-container" id="memoContainer"></div>
+        </div>
+    </section>
+
+    <!-- [섹션 2] HTML 뷰 -->
+    <section id="labView" class="view-section">
+        <div class="lab-container" id="labContainer">
+            <!-- 1. 메인 미리보기 영역 -->
+            <div class="lab-pane">
+                <div class="lab-pane-header">
+                    <div class="lab-pane-title">
+                        <span>실행 미리보기</span>
+                    </div>
+                    <div class="lab-pane-tools">
+                        <div class="zoom-controls">
+                            <button class="zoom-btn" onclick="adjustZoom(-0.1)" title="축소">-</button>
+                            <span class="zoom-level-text" id="zoomLevelText">100%</span>
+                            <button class="zoom-btn" onclick="adjustZoom(0.1)" title="확대">+</button>
+                            <button class="zoom-reset-btn" onclick="resetZoom()" title="기본값 초기화">초기화</button>
+                        </div>
+                        <button class="lab-action-btn" id="fullscreenToggleBtn" onclick="toggleFullscreenPreview()" style="font-size: 0.74rem; height: 26px; padding: 0 8px;">전체보기</button>
+                    </div>
+                </div>
+                <div class="lab-preview-wrapper" id="labPreviewWrapper">
+                    <div class="lab-preview-content" id="labPreviewContent"></div>
+                </div>
+            </div>
+
+            <!-- 2. 하단 고정형 리사이징 입력 바 -->
+            <div class="lab-chatbar-container" id="labChatbarContainer">
+                <div class="lab-chatbar-header">
+                    <span>HTML / CSS 코드 에디터</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="labCharCounter">0자</span>
+                        <button class="zoom-btn" onclick="toggleChatbarSize()" id="chatbarToggleBtn" title="크기 확장/축소">▲</button>
+                    </div>
+                </div>
+                <textarea class="lab-textarea" id="labCodeInput" placeholder="이곳에 HTML/CSS 코드를 입력하세요..."></textarea>
+                <div class="lab-chatbar-footer">
+                    <div style="display: flex; gap: 6px;">
+                        <button class="lab-action-btn" onclick="clearLabCodeDirect()">지우기</button>
+                        <button class="lab-action-btn" onclick="copyLabCodeDirect()">복사</button>
+                    </div>
+                    <span style="font-size: 0.74rem; color: var(--text-sub);">클릭 시 그 자리에 해당하는 코드가 하이라이트됩니다</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- [섹션 3] 에디터 뷰 -->
+    <section id="editorView" class="view-section">
+        <div class="editor-container">
+            <div class="editor-header-bar">
+                <div class="editor-title-group">
+                    <span class="editor-view-title" id="editorViewTitle">새 기록 작성</span>
+                    <span class="editor-char-counter" id="charCounter">0자</span>
+                </div>
+                <div class="editor-actions-group">
+                    <button type="button" class="text-btn" id="cancelEditorBtn">취소</button>
+                    <button type="button" class="text-btn primary" id="saveMemoBtn">저장</button>
+                </div>
+            </div>
+            
+            <form id="memoForm">
+                <input type="hidden" id="memoId">
+                <div class="form-group">
+                    <label class="form-label">카테고리</label>
+                    <select class="form-select" id="memoCategory">
+                        <option value="아이디어">아이디어</option>
+                        <option value="세계관">세계관</option>
+                        <option value="캐릭터">캐릭터</option>
+                        <option value="대사">대사</option>
+                        <option value="프롬프트">프롬프트</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">제목</label>
+                    <input type="text" class="form-input" id="memoTitleInput" placeholder="제목을 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">이미지 첨부 (선택)</label>
+                    <div class="file-upload-box">
+                        <input type="file" id="memoImageInput" accept="image/*" style="display: none;">
+                        <label for="memoImageInput" class="file-upload-label" id="fileUploadLabelText">파일 선택</label>
+                        <div class="preview-thumb-box" id="previewThumbBox">
+                            <img id="previewThumbImg" class="preview-thumb" src="" alt="미리보기">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">내용</label>
+                    <textarea class="form-textarea" id="memoContentInput" placeholder="자유로운 텍스트나 메모를 남기세요. (#해시태그 사용 가능)" required></textarea>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const htmlElement = document.documentElement;
+
+        const savedTheme = localStorage.getItem('haesang_theme_mono') || 'dark';
+        htmlElement.setAttribute('data-theme', savedTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('haesang_theme_mono', newTheme);
+        });
+
+        const archiveView = document.getElementById('archiveView');
+        const labView = document.getElementById('labView');
+        const editorView = document.getElementById('editorView');
+        const recordBadgeWrap = document.getElementById('recordBadgeWrap');
+
+        window.switchMainView = function(viewName) {
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+            archiveView.classList.remove('active');
+            labView.classList.remove('active');
+            editorView.classList.remove('active');
+
+            if (viewName === 'archive') {
+                archiveView.classList.add('active');
+                document.querySelector('.nav-tabs button:nth-child(1)').classList.add('active');
+                recordBadgeWrap.style.visibility = 'visible';
+                recordBadgeWrap.style.pointerEvents = 'auto';
+            } else if (viewName === 'lab') {
+                labView.classList.add('active');
+                document.querySelector('.nav-tabs button:nth-child(2)').classList.add('active');
+                recordBadgeWrap.style.visibility = 'hidden';
+                recordBadgeWrap.style.pointerEvents = 'none';
+                updateLabPreview();
+            }
+        };
+
+        let memos = JSON.parse(localStorage.getItem('haesang_memos_mono')) || [];
+        let currentCategory = "전체";
+        let searchQuery = "";
+        let uploadedImageBase64 = "";
+
+        const memoContainer = document.getElementById('memoContainer');
+        const openEditorBtn = document.getElementById('openEditorBtn');
+        const cancelEditorBtn = document.getElementById('cancelEditorBtn');
+        const saveMemoBtn = document.getElementById('saveMemoBtn');
+        const searchInput = document.getElementById('searchInput');
+        const recordCount = document.getElementById('recordCount');
+        
+        const memoIdInput = document.getElementById('memoId');
+        const memoCategoryInput = document.getElementById('memoCategory');
+        const memoTitleInput = document.getElementById('memoTitleInput');
+        const memoContentInput = document.getElementById('memoContentInput');
+        const memoImageInput = document.getElementById('memoImageInput');
+        const fileUploadLabelText = document.getElementById('fileUploadLabelText');
+        const previewThumbBox = document.getElementById('previewThumbBox');
+        const previewThumbImg = document.getElementById('previewThumbImg');
+        const charCounter = document.getElementById('charCounter');
+        const editorViewTitle = document.getElementById('editorViewTitle');
+
+        function updateCharCount() {
+            const text = memoContentInput.value || "";
+            charCounter.innerText = `${text.length.toLocaleString()}자`;
+        }
+        memoContentInput.addEventListener('input', updateCharCount);
+
+        memoImageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            fileUploadLabelText.innerText = file.name;
+            const reader = new FileReader();
+            reader.onload = function(uploadEvent) {
+                uploadedImageBase64 = uploadEvent.target.result;
+                previewThumbImg.src = uploadedImageBase64;
+                previewThumbBox.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function renderMemos() {
+            memoContainer.innerHTML = '';
+            
+            const filtered = memos.filter(memo => {
+                const matchCategory = currentCategory === "전체" || memo.category === currentCategory;
+                const matchSearch = searchQuery === "" || 
+                    memo.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    memo.content.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchCategory && matchSearch;
+            });
+
+            recordCount.innerText = filtered.length;
+
+            if (filtered.length === 0) {
+                memoContainer.innerHTML = `<div class="empty-state">등록된 기록이 없습니다. 상단의 버튼을 눌러 새로운 내용을 추가해 보세요.</div>`;
+                return;
+            }
+
+            filtered.sort((a, b) => b.id - a.id).forEach(memo => {
+                const card = document.createElement('div');
+                card.className = 'memo-card';
+                
+                let imageHtml = '';
+                if (memo.image && memo.image.trim() !== '') {
+                    imageHtml = `
+                        <div class="memo-image-wrap">
+                            <img src="${memo.image}" class="memo-image" alt="첨부 이미지">
+                        </div>
+                    `;
+                }
+
+                const contentWithTagsParsed = memo.content.replace(/(#[^\s#]+)/g, '<span class="tag" onclick="filterByTag(\'$1\')">$1</span>');
+
+                card.innerHTML = `
+                    <div class="memo-top-row">
+                        <div class="memo-meta-info">
+                            <span class="memo-badge">${memo.category}</span>
+                            <span class="memo-date">${memo.date}</span>
+                        </div>
+                        <div class="memo-actions">
+                            <button class="action-icon-btn" onclick="openEditEditor(${memo.id})">수정</button>
+                            <button class="action-icon-btn" onclick="deleteMemo(${memo.id})">삭제</button>
+                        </div>
+                    </div>
+                    <div class="memo-title">${escapeHtml(memo.title)}</div>
+                    ${imageHtml}
+                    <div class="memo-content">${contentWithTagsParsed}</div>
+                `;
+                memoContainer.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        window.filterByTag = function(tagText) {
+            searchInput.value = tagText;
+            searchQuery = tagText.trim();
+            renderMemos();
+            archiveView.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.trim();
+            renderMemos();
+        });
+
+        openEditorBtn.addEventListener('click', () => {
+            memoIdInput.value = '';
+            memoTitleInput.value = '';
+            memoContentInput.value = '';
+            memoImageInput.value = '';
+            uploadedImageBase64 = '';
+            fileUploadLabelText.innerText = "파일 선택";
+            previewThumbBox.style.display = 'none';
+            
+            updateCharCount();
+            editorViewTitle.innerText = "새 기록 작성";
+            
+            archiveView.classList.remove('active');
+            labView.classList.remove('active');
+            editorView.classList.add('active');
+            recordBadgeWrap.style.visibility = 'hidden';
+            recordBadgeWrap.style.pointerEvents = 'none';
+        });
+
+        cancelEditorBtn.addEventListener('click', () => {
+            switchMainView('archive');
+        });
+
+        saveMemoBtn.addEventListener('click', () => {
+            const titleVal = memoTitleInput.value.trim();
+            const contentVal = memoContentInput.value.trim();
+
+            if (!titleVal || !contentVal) {
+                alert("제목과 내용을 모두 입력해주세요.");
+                return;
+            }
+
+            const id = memoIdInput.value;
+            const category = memoCategoryInput.value;
+            const title = memoTitleInput.value;
+            const content = memoContentInput.value;
+            const today = new Date().toISOString().split('T')[0];
+
+            if (id) {
+                memos = memos.map(m => {
+                    if (m.id == id) {
+                        return {
+                            ...m,
+                            category,
+                            title,
+                            content,
+                            image: uploadedImageBase64 !== "" ? uploadedImageBase64 : m.image
+                        };
+                    }
+                    return m;
+                });
+            } else {
+                const newMemo = {
+                    id: Date.now(),
+                    category,
+                    title,
+                    image: uploadedImageBase64,
+                    content,
+                    date: today
+                };
+                memos.push(newMemo);
+            }
+
+            localStorage.setItem('haesang_memos_mono', JSON.stringify(memos));
+            switchMainView('archive');
+            renderMemos();
+        });
+
+        window.openEditEditor = function(id) {
+            const memo = memos.find(m => m.id === id);
+            if (!memo) return;
+
+            memoIdInput.value = memo.id;
+            memoCategoryInput.value = memo.category;
+            memoTitleInput.value = memo.title;
+            memoContentInput.value = memo.content;
+            
+            uploadedImageBase64 = memo.image || "";
+            if (memo.image) {
+                fileUploadLabelText.innerText = "이미지 유지됨";
+                previewThumbImg.src = memo.image;
+                previewThumbBox.style.display = 'block';
+            } else {
+                fileUploadLabelText.innerText = "파일 선택";
+                previewThumbBox.style.display = 'none';
+            }
+
+            updateCharCount();
+            editorViewTitle.innerText = "기록 수정";
+
+            archiveView.classList.remove('active');
+            labView.classList.remove('active');
+            editorView.classList.add('active');
+            recordBadgeWrap.style.visibility = 'hidden';
+            recordBadgeWrap.style.pointerEvents = 'none';
+        }
+
+        window.deleteMemo = function(id) {
+            if (confirm("이 기록을 삭제하시겠습니까?")) {
+                memos = memos.filter(m => m.id !== id);
+                localStorage.setItem('haesang_memos_mono', JSON.stringify(memos));
+                renderMemos();
+            }
+        }
+
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.getAttribute('data-cat');
+                renderMemos();
+            });
+        });
+
+        const labCodeInput = document.getElementById('labCodeInput');
+        const labPreviewContent = document.getElementById('labPreviewContent');
+        const labCharCounter = document.getElementById('labCharCounter');
+        const zoomLevelText = document.getElementById('zoomLevelText');
+        const labContainer = document.getElementById('labContainer');
+        const fullscreenToggleBtn = document.getElementById('fullscreenToggleBtn');
+        const labChatbarContainer = document.getElementById('labChatbarContainer');
+        const chatbarToggleBtn = document.getElementById('chatbarToggleBtn');
+
+        let currentZoom = 1.0;
+        let isFullscreen = false;
+        let isExpanded = false;
+
+        window.toggleChatbarSize = function() {
+            isExpanded = !isExpanded;
+            if (isExpanded) {
+                labCodeInput.style.height = '180px';
+                chatbarToggleBtn.innerText = '▼';
+            } else {
+                labCodeInput.style.height = '44px';
+                chatbarToggleBtn.innerText = '▲';
+            }
+        };
+
+        labCodeInput.addEventListener('input', () => {
+            updateLabCharCount();
+            updateLabPreview();
+
+            labCodeInput.style.height = 'auto';
+            let newHeight = labCodeInput.scrollHeight;
+            if (newHeight > 200) newHeight = 200;
+            if (newHeight < 44) newHeight = 44;
+            labCodeInput.style.height = newHeight + 'px';
+        });
+
+        labPreviewContent.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const target = e.target;
+            if (target === labPreviewContent) return;
+
+            const tagName = target.tagName.toLowerCase();
+            const codeVal = labCodeInput.value;
+            let targetIndex = -1;
+            let matchLength = 0;
+
+            if (target.id) {
+                const regex = new RegExp(`<${tagName}[^>]*id=["']${target.id}["'][^>]*>`, 'i');
+                const match = codeVal.match(regex);
+                if (match) {
+                    targetIndex = codeVal.indexOf(match[0]);
+                    matchLength = match[0].length;
+                }
+            }
+            if (targetIndex === -1 && target.className && typeof target.className === 'string') {
+                const firstClass = target.className.trim().split(/\s+/)[0];
+                if (firstClass) {
+                    const regex = new RegExp(`<${tagName}[^>]*class=["'][^"']*${firstClass}[^"']*["'][^>]*>`, 'i');
+                    const match = codeVal.match(regex);
+                    if (match) {
+                        targetIndex = codeVal.indexOf(match[0]);
+                        matchLength = match[0].length;
+                    }
+                }
+            }
+            if (targetIndex === -1) {
+                const regex = new RegExp(`<${tagName}[^>]*>`, 'i');
+                const match = codeVal.match(regex);
+                if (match) {
+                    targetIndex = codeVal.indexOf(match[0]);
+                    matchLength = match[0].length;
+                }
+            }
+
+            if (targetIndex !== -1) {
+                labCodeInput.focus();
+                labCodeInput.setSelectionRange(targetIndex, targetIndex + matchLength);
+            }
+        });
+
+        window.adjustZoom = function(amount) {
+            currentZoom = Math.min(Math.max(0.3, currentZoom + amount), 2.0);
+            applyZoom();
+        };
+
+        window.resetZoom = function() {
+            currentZoom = 1.0;
+            applyZoom();
+        };
+
+        function applyZoom() {
+            const percent = Math.round(currentZoom * 100);
+            zoomLevelText.innerText = `${percent}%`;
+            labPreviewContent.style.transform = `scale(${currentZoom})`;
+            labPreviewContent.style.width = `${(100 / currentZoom)}%`;
+            labPreviewContent.style.height = `${(100 / currentZoom)}%`;
+        }
+
+        window.toggleFullscreenPreview = function() {
+            isFullscreen = !isFullscreen;
+            if (isFullscreen) {
+                labContainer.classList.add('fullscreen-mode');
+                fullscreenToggleBtn.innerText = '축소보기';
+                fullscreenToggleBtn.classList.add('primary');
+            } else {
+                labContainer.classList.remove('fullscreen-mode');
+                fullscreenToggleBtn.innerText = '전체보기';
+                fullscreenToggleBtn.classList.remove('primary');
+            }
+        };
+
+        function updateLabCharCount() {
+            const code = labCodeInput.value || "";
+            labCharCounter.innerText = `${code.length.toLocaleString()}자`;
+        }
+
+        function updateLabPreview() {
+            const code = labCodeInput.value;
+            labPreviewContent.innerHTML = code;
+        }
+
+        window.clearLabCodeDirect = function() {
+            labCodeInput.value = "";
+            labCodeInput.style.height = '44px';
+            isExpanded = false;
+            chatbarToggleBtn.innerText = '▲';
+            updateLabCharCount();
+            updateLabPreview();
+            labCodeInput.focus();
+        };
+
+        window.copyLabCodeDirect = function() {
+            if (!labCodeInput.value.trim()) {
+                alert("복사할 코드가 없습니다.");
+                return;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(labCodeInput.value).then(() => {
+                    alert("코드가 클립보드에 복사되었습니다.");
+                }).catch(() => {
+                    fallbackCopyText(labCodeInput);
+                });
+            } else {
+                fallbackCopyText(labCodeInput);
+            }
+        };
+
+        renderMemos();
+        updateLabPreview();
+    </script>
+</body>
+</html>
