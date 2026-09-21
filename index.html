@@ -68,7 +68,8 @@
         .view-section {
             display: none;
             width: 100%;
-            height: calc(100dvh - 64px);
+            flex: 1;
+            min-height: 0;
             overflow-y: auto;
             position: relative;
         }
@@ -416,7 +417,166 @@
         }
         .tag:hover { background: var(--text-main); color: var(--bg-color); }
 
-        /* --- [섹션 2] HTML 뷰 --- */
+        /* --- [섹션 2] Todo 뷰 --- */
+        #todoView {
+            display: none;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+        }
+        #todoView.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .todo-container {
+            max-width: 720px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 20px calc(100px + env(safe-area-inset-bottom, 20px));
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .todo-input-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .todo-input-box {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .todo-input {
+            width: 100%;
+            height: 44px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            padding: 0 16px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.2s;
+        }
+        .todo-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+        }
+
+        .todo-add-btn {
+            background: var(--text-main);
+            color: var(--bg-color);
+            height: 44px;
+            padding: 0 20px;
+            border-radius: var(--radius-main);
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-sub);
+            transition: opacity 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .todo-add-btn:hover { opacity: 0.85; }
+
+        .todo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .todo-item {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.2s;
+        }
+
+        .todo-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .todo-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid var(--border-focus);
+            border-radius: 6px;
+            background: var(--surface-solid);
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+        .todo-checkbox:checked {
+            background: var(--text-main);
+            border-color: var(--text-main);
+        }
+        .todo-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid var(--bg-color);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .todo-text {
+            font-size: 0.92rem;
+            color: var(--text-main);
+            word-break: break-all;
+            transition: opacity 0.2s, text-decoration 0.2s;
+        }
+        .todo-item.completed .todo-text {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
+
+        .todo-delete-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .todo-delete-btn:hover {
+            background: var(--surface-hover);
+            color: var(--text-main);
+        }
+
+        /* --- [섹션 3] HTML 뷰 --- */
         .lab-container {
             max-width: 1300px;
             width: 100%;
@@ -456,7 +616,7 @@
 
         .lab-pane-header {
             background: var(--surface-hover);
-            padding: 10px 16px;
+            padding: 8px 12px;
             font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-sub);
@@ -465,7 +625,7 @@
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
-            gap: 8px;
+            gap: 6px;
         }
 
         .lab-pane-title {
@@ -482,24 +642,53 @@
         .lab-pane-tools {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             flex-shrink: 0;
+        }
+
+        .device-toggle-group {
+            display: flex;
+            gap: 2px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 2px;
+        }
+        .device-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            height: 24px;
+            padding: 0 6px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+        .device-btn.active {
+            background: var(--surface-hover);
+            color: var(--text-main);
+            font-weight: 600;
         }
 
         .zoom-controls {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 2px;
             flex-shrink: 0;
         }
         .zoom-btn {
             background: var(--surface-solid);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 6px;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -512,10 +701,10 @@
             background: var(--surface-solid);
             border: 1px solid var(--border-color);
             color: var(--text-sub);
-            height: 26px;
-            padding: 0 6px;
+            height: 24px;
+            padding: 0 5px;
             border-radius: 6px;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 500;
             cursor: pointer;
             display: inline-flex;
@@ -527,10 +716,10 @@
         .zoom-reset-btn:hover { background: var(--surface-hover); color: var(--text-main); }
 
         .zoom-level-text {
-            font-size: 0.76rem;
+            font-size: 0.74rem;
             color: var(--text-main);
             font-weight: 600;
-            min-width: 34px;
+            min-width: 30px;
             text-align: center;
             flex-shrink: 0;
         }
@@ -543,6 +732,24 @@
             background: var(--preview-bg);
             color: var(--preview-text);
             transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .lab-preview-wrapper.mobile-mode {
+            justify-content: center;
+            background-color: var(--bg-color);
+            padding: 20px 0;
+        }
+        .lab-preview-wrapper.mobile-mode .lab-preview-content {
+            width: 375px !important;
+            max-width: 375px;
+            min-height: 667px;
+            border-radius: 24px;
+            border: 8px solid var(--text-main);
+            box-shadow: var(--shadow-hover);
+            margin: auto;
         }
 
         .lab-preview-content {
@@ -625,10 +832,10 @@
             background: var(--surface-solid);
             border: 1px solid var(--border-color);
             color: var(--text-sub);
-            height: 30px;
-            padding: 0 10px;
-            border-radius: 8px;
-            font-size: 0.76rem;
+            height: 26px;
+            padding: 0 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
             font-weight: 500;
             cursor: pointer;
             box-shadow: var(--shadow-sub);
@@ -646,7 +853,7 @@
             font-weight: 600;
         }
 
-        /* --- [섹션 3] 에디터 뷰 --- */
+        /* --- [섹션 4] 에디터 뷰 --- */
         .editor-container {
             max-width: 720px;
             width: 100%;
@@ -734,6 +941,29 @@
         }
         .file-upload-label:hover { border-color: var(--border-focus); color: var(--text-main); background: var(--surface-hover); }
 
+        .file-delete-btn {
+            height: 44px;
+            padding: 0 16px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            color: var(--text-sub);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: var(--shadow-sub);
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .file-delete-btn:hover {
+            background: var(--surface-hover);
+            color: var(--text-main);
+            border-color: var(--border-focus);
+        }
+
         .preview-thumb-box {
             position: relative;
             width: 44px;
@@ -771,6 +1001,7 @@
                 </span>
                 <div class="nav-tabs">
                     <button class="nav-tab-btn active" onclick="switchMainView('archive')">Archive</button>
+                    <button class="nav-tab-btn" onclick="switchMainView('todo')">Todo</button>
                     <button class="nav-tab-btn" onclick="switchMainView('lab')">HTML</button>
                 </div>
             </div>
@@ -808,7 +1039,20 @@
         </div>
     </section>
 
-    <!-- [섹션 2] HTML 뷰 -->
+    <!-- [섹션 2] Todo 뷰 -->
+    <section id="todoView" class="view-section">
+        <div class="todo-container">
+            <div class="todo-input-row">
+                <div class="todo-input-box">
+                    <input type="text" class="todo-input" id="todoInput" placeholder="새로운 할 일을 입력하세요..." onkeydown="if(event.key==='Enter') addTodo()">
+                </div>
+                <button class="todo-add-btn" onclick="addTodo()">추가</button>
+            </div>
+            <div class="todo-list" id="todoList"></div>
+        </div>
+    </section>
+
+    <!-- [섹션 3] HTML 뷰 -->
     <section id="labView" class="view-section">
         <div class="lab-container" id="labContainer">
             <!-- 1. 메인 미리보기 영역 -->
@@ -818,13 +1062,18 @@
                         <span>실행 미리보기</span>
                     </div>
                     <div class="lab-pane-tools">
+                        <!-- 디바이스 환경 전환 토글 -->
+                        <div class="device-toggle-group">
+                            <button class="device-btn active" id="pcModeBtn" onclick="setPreviewDevice('pc')">🖥️ PC</button>
+                            <button class="device-btn" id="mobileModeBtn" onclick="setPreviewDevice('mobile')">📱 모바일</button>
+                        </div>
                         <div class="zoom-controls">
                             <button class="zoom-btn" onclick="adjustZoom(-0.1)" title="축소">-</button>
                             <span class="zoom-level-text" id="zoomLevelText">100%</span>
                             <button class="zoom-btn" onclick="adjustZoom(0.1)" title="확대">+</button>
                             <button class="zoom-reset-btn" onclick="resetZoom()" title="기본값 초기화">초기화</button>
                         </div>
-                        <button class="lab-action-btn" id="fullscreenToggleBtn" onclick="toggleFullscreenPreview()" style="font-size: 0.74rem; height: 26px; padding: 0 8px;">전체보기</button>
+                        <button class="lab-action-btn" id="fullscreenToggleBtn" onclick="toggleFullscreenPreview()">전체보기</button>
                     </div>
                 </div>
                 <div class="lab-preview-wrapper" id="labPreviewWrapper">
@@ -847,13 +1096,13 @@
                         <button class="lab-action-btn" onclick="clearLabCodeDirect()">지우기</button>
                         <button class="lab-action-btn" onclick="copyLabCodeDirect()">복사</button>
                     </div>
-                    <span style="font-size: 0.74rem; color: var(--text-sub);">클릭 시 그 자리에 해당하는 코드가 하이라이트됩니다</span>
+                    <span style="font-size: 0.74rem; color: var(--text-sub);">요소 클릭 시 코드 하이라이트</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- [섹션 3] 에디터 뷰 -->
+    <!-- [섹션 4] 에디터 뷰 -->
     <section id="editorView" class="view-section">
         <div class="editor-container">
             <div class="editor-header-bar">
@@ -888,6 +1137,7 @@
                     <div class="file-upload-box">
                         <input type="file" id="memoImageInput" accept="image/*" style="display: none;">
                         <label for="memoImageInput" class="file-upload-label" id="fileUploadLabelText">파일 선택</label>
+                        <button type="button" class="file-delete-btn" id="fileDeleteBtn" onclick="clearAttachedImage()">이미지 삭제</button>
                         <div class="preview-thumb-box" id="previewThumbBox">
                             <img id="previewThumbImg" class="preview-thumb" src="" alt="미리보기">
                         </div>
@@ -916,6 +1166,7 @@
         });
 
         const archiveView = document.getElementById('archiveView');
+        const todoView = document.getElementById('todoView');
         const labView = document.getElementById('labView');
         const editorView = document.getElementById('editorView');
         const recordBadgeWrap = document.getElementById('recordBadgeWrap');
@@ -923,6 +1174,7 @@
         window.switchMainView = function(viewName) {
             document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
             archiveView.classList.remove('active');
+            todoView.classList.remove('active');
             labView.classList.remove('active');
             editorView.classList.remove('active');
 
@@ -931,14 +1183,78 @@
                 document.querySelector('.nav-tabs button:nth-child(1)').classList.add('active');
                 recordBadgeWrap.style.visibility = 'visible';
                 recordBadgeWrap.style.pointerEvents = 'auto';
+            } else if (viewName === 'todo') {
+                todoView.classList.add('active');
+                document.querySelector('.nav-tabs button:nth-child(2)').classList.add('active');
+                recordBadgeWrap.style.visibility = 'hidden';
+                recordBadgeWrap.style.pointerEvents = 'none';
+                renderTodos();
             } else if (viewName === 'lab') {
                 labView.classList.add('active');
-                document.querySelector('.nav-tabs button:nth-child(2)').classList.add('active');
+                document.querySelector('.nav-tabs button:nth-child(3)').classList.add('active');
                 recordBadgeWrap.style.visibility = 'hidden';
                 recordBadgeWrap.style.pointerEvents = 'none';
                 updateLabPreview();
             }
         };
+
+        // --- Todo 데이터 관리 ---
+        let todos = JSON.parse(localStorage.getItem('haesang_todos_mono')) || [];
+        const todoInput = document.getElementById('todoInput');
+        const todoList = document.getElementById('todoList');
+
+        window.addTodo = function() {
+            const val = todoInput.value.trim();
+            if (!val) return;
+
+            const newTodo = {
+                id: Date.now(),
+                text: val,
+                completed: false
+            };
+            todos.unshift(newTodo);
+            localStorage.setItem('haesang_todos_mono', JSON.stringify(todos));
+            todoInput.value = '';
+            renderTodos();
+        }
+
+        window.toggleTodo = function(id) {
+            todos = todos.map(t => {
+                if (t.id === id) {
+                    return { ...t, completed: !t.completed };
+                }
+                return t;
+            });
+            localStorage.setItem('haesang_todos_mono', JSON.stringify(todos));
+            renderTodos();
+        }
+
+        window.deleteTodo = function(id) {
+            todos = todos.filter(t => t.id !== id);
+            localStorage.setItem('haesang_todos_mono', JSON.stringify(todos));
+            renderTodos();
+        }
+
+        function renderTodos() {
+            todoList.innerHTML = '';
+            if (todos.length === 0) {
+                todoList.innerHTML = `<div class="empty-state">등록된 할 일이 없습니다. 상단에서 새로운 할 일을 추가해 보세요.</div>`;
+                return;
+            }
+
+            todos.forEach(todo => {
+                const item = document.createElement('div');
+                item.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                item.innerHTML = `
+                    <div class="todo-item-left">
+                        <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} onclick="toggleTodo(${todo.id})">
+                        <span class="todo-text">${escapeHtml(todo.text)}</span>
+                    </div>
+                    <button class="todo-delete-btn" onclick="deleteTodo(${todo.id})">삭제</button>
+                `;
+                todoList.appendChild(item);
+            });
+        }
 
         let memos = JSON.parse(localStorage.getItem('haesang_memos_mono')) || [];
         let currentCategory = "전체";
@@ -958,6 +1274,7 @@
         const memoContentInput = document.getElementById('memoContentInput');
         const memoImageInput = document.getElementById('memoImageInput');
         const fileUploadLabelText = document.getElementById('fileUploadLabelText');
+        const fileDeleteBtn = document.getElementById('fileDeleteBtn');
         const previewThumbBox = document.getElementById('previewThumbBox');
         const previewThumbImg = document.getElementById('previewThumbImg');
         const charCounter = document.getElementById('charCounter');
@@ -966,8 +1283,47 @@
         function updateCharCount() {
             const text = memoContentInput.value || "";
             charCounter.innerText = `${text.length.toLocaleString()}자`;
+            saveDraft();
         }
         memoContentInput.addEventListener('input', updateCharCount);
+        memoTitleInput.addEventListener('input', saveDraft);
+        memoCategoryInput.addEventListener('change', saveDraft);
+
+        function saveDraft() {
+            if (!memoIdInput.value) {
+                const draftData = {
+                    category: memoCategoryInput.value,
+                    title: memoTitleInput.value,
+                    content: memoContentInput.value,
+                    image: uploadedImageBase64
+                };
+                localStorage.setItem('haesang_memo_draft', JSON.stringify(draftData));
+            }
+        }
+
+        function loadDraft() {
+            const draft = localStorage.getItem('haesang_memo_draft');
+            if (draft) {
+                try {
+                    const data = JSON.parse(draft);
+                    memoCategoryInput.value = data.category || "아이디어";
+                    memoTitleInput.value = data.title || "";
+                    memoContentInput.value = data.content || "";
+                    if (data.image) {
+                        uploadedImageBase64 = data.image;
+                        previewThumbImg.src = uploadedImageBase64;
+                        previewThumbBox.style.display = 'block';
+                        fileDeleteBtn.style.display = 'inline-flex';
+                        fileUploadLabelText.innerText = "임시저장된 이미지";
+                    }
+                    updateCharCount();
+                } catch (e) {}
+            }
+        }
+
+        function clearDraft() {
+            localStorage.removeItem('haesang_memo_draft');
+        }
 
         memoImageInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -978,9 +1334,21 @@
                 uploadedImageBase64 = uploadEvent.target.result;
                 previewThumbImg.src = uploadedImageBase64;
                 previewThumbBox.style.display = 'block';
+                fileDeleteBtn.style.display = 'inline-flex';
+                saveDraft();
             };
             reader.readAsDataURL(file);
         });
+
+        window.clearAttachedImage = function() {
+            memoImageInput.value = "";
+            uploadedImageBase64 = "";
+            fileUploadLabelText.innerText = "파일 선택";
+            previewThumbImg.src = "";
+            previewThumbBox.style.display = 'none';
+            fileDeleteBtn.style.display = 'none';
+            saveDraft();
+        }
 
         function renderMemos() {
             memoContainer.innerHTML = '';
@@ -1060,11 +1428,15 @@
             uploadedImageBase64 = '';
             fileUploadLabelText.innerText = "파일 선택";
             previewThumbBox.style.display = 'none';
+            fileDeleteBtn.style.display = 'none';
             
+            loadDraft();
+
             updateCharCount();
             editorViewTitle.innerText = "새 기록 작성";
             
             archiveView.classList.remove('active');
+            todoView.classList.remove('active');
             labView.classList.remove('active');
             editorView.classList.add('active');
             recordBadgeWrap.style.visibility = 'hidden';
@@ -1098,7 +1470,7 @@
                             category,
                             title,
                             content,
-                            image: uploadedImageBase64 !== "" ? uploadedImageBase64 : m.image
+                            image: uploadedImageBase64
                         };
                     }
                     return m;
@@ -1113,6 +1485,7 @@
                     date: today
                 };
                 memos.push(newMemo);
+                clearDraft();
             }
 
             localStorage.setItem('haesang_memos_mono', JSON.stringify(memos));
@@ -1134,15 +1507,18 @@
                 fileUploadLabelText.innerText = "이미지 유지됨";
                 previewThumbImg.src = memo.image;
                 previewThumbBox.style.display = 'block';
+                fileDeleteBtn.style.display = 'inline-flex';
             } else {
                 fileUploadLabelText.innerText = "파일 선택";
                 previewThumbBox.style.display = 'none';
+                fileDeleteBtn.style.display = 'none';
             }
 
             updateCharCount();
             editorViewTitle.innerText = "기록 수정";
 
             archiveView.classList.remove('active');
+            todoView.classList.remove('active');
             labView.classList.remove('active');
             editorView.classList.add('active');
             recordBadgeWrap.style.visibility = 'hidden';
@@ -1174,10 +1550,29 @@
         const fullscreenToggleBtn = document.getElementById('fullscreenToggleBtn');
         const labChatbarContainer = document.getElementById('labChatbarContainer');
         const chatbarToggleBtn = document.getElementById('chatbarToggleBtn');
+        const labPreviewWrapper = document.getElementById('labPreviewWrapper');
+        const pcModeBtn = document.getElementById('pcModeBtn');
+        const mobileModeBtn = document.getElementById('mobileModeBtn');
 
         let currentZoom = 1.0;
         let isFullscreen = false;
         let isExpanded = false;
+        let isMobileDeviceMode = false;
+
+        window.setPreviewDevice = function(mode) {
+            if (mode === 'mobile') {
+                isMobileDeviceMode = true;
+                labPreviewWrapper.classList.add('mobile-mode');
+                mobileModeBtn.classList.add('active');
+                pcModeBtn.classList.remove('active');
+            } else {
+                isMobileDeviceMode = false;
+                labPreviewWrapper.classList.remove('mobile-mode');
+                pcModeBtn.classList.add('active');
+                mobileModeBtn.classList.remove('active');
+            }
+            applyZoom();
+        };
 
         window.toggleChatbarSize = function() {
             isExpanded = !isExpanded;
@@ -1203,45 +1598,58 @@
 
         labPreviewContent.addEventListener('click', (e) => {
             e.stopPropagation();
-            const target = e.target;
+            let target = e.target;
             if (target === labPreviewContent) return;
 
-            const tagName = target.tagName.toLowerCase();
             const codeVal = labCodeInput.value;
             let targetIndex = -1;
             let matchLength = 0;
 
-            if (target.id) {
-                const regex = new RegExp(`<${tagName}[^>]*id=["']${target.id}["'][^>]*>`, 'i');
-                const match = codeVal.match(regex);
-                if (match) {
-                    targetIndex = codeVal.indexOf(match[0]);
-                    matchLength = match[0].length;
+            while (target && target !== labPreviewContent) {
+                const tagName = target.tagName ? target.tagName.toLowerCase() : '';
+                if (!tagName) {
+                    target = target.parentElement;
+                    continue;
                 }
-            }
-            if (targetIndex === -1 && target.className && typeof target.className === 'string') {
-                const firstClass = target.className.trim().split(/\s+/)[0];
-                if (firstClass) {
-                    const regex = new RegExp(`<${tagName}[^>]*class=["'][^"']*${firstClass}[^"']*["'][^>]*>`, 'i');
+
+                if (target.id) {
+                    const regex = new RegExp(`<${tagName}[^>]*id=["']${target.id}["'][^>]*>`, 'i');
                     const match = codeVal.match(regex);
                     if (match) {
                         targetIndex = codeVal.indexOf(match[0]);
                         matchLength = match[0].length;
+                        break;
                     }
                 }
-            }
-            if (targetIndex === -1) {
+
+                if (target.className && typeof target.className === 'string') {
+                    const firstClass = target.className.trim().split(/\s+/)[0];
+                    if (firstClass) {
+                        const regex = new RegExp(`<${tagName}[^>]*class=["'][^"']*${firstClass}[^"']*["'][^>]*>`, 'i');
+                        const match = codeVal.match(regex);
+                        if (match) {
+                            targetIndex = codeVal.indexOf(match[0]);
+                            matchLength = match[0].length;
+                            break;
+                        }
+                    }
+                }
+
                 const regex = new RegExp(`<${tagName}[^>]*>`, 'i');
                 const match = codeVal.match(regex);
                 if (match) {
                     targetIndex = codeVal.indexOf(match[0]);
                     matchLength = match[0].length;
+                    break;
                 }
+
+                target = target.parentElement;
             }
 
             if (targetIndex !== -1) {
                 labCodeInput.focus();
                 labCodeInput.setSelectionRange(targetIndex, targetIndex + matchLength);
+                labCodeInput.scrollTop = (targetIndex / codeVal.length) * labCodeInput.scrollHeight;
             }
         });
 
@@ -1259,7 +1667,11 @@
             const percent = Math.round(currentZoom * 100);
             zoomLevelText.innerText = `${percent}%`;
             labPreviewContent.style.transform = `scale(${currentZoom})`;
-            labPreviewContent.style.width = `${(100 / currentZoom)}%`;
+            if (isMobileDeviceMode) {
+                labPreviewContent.style.width = `${375 / currentZoom}px`;
+            } else {
+                labPreviewContent.style.width = `${(100 / currentZoom)}%`;
+            }
             labPreviewContent.style.height = `${(100 / currentZoom)}%`;
         }
 
@@ -1267,7 +1679,7 @@
             isFullscreen = !isFullscreen;
             if (isFullscreen) {
                 labContainer.classList.add('fullscreen-mode');
-                fullscreenToggleBtn.innerText = '축소보기';
+                fullscreenToggleBtn.innerText = '축소';
                 fullscreenToggleBtn.classList.add('primary');
             } else {
                 labContainer.classList.remove('fullscreen-mode');
